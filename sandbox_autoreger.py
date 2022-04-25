@@ -33,7 +33,7 @@ def get_username(length):
 	while len(usernames) < length:
 		try:
 			r = get('https://story-shack-cdn-v2.glitch.me/generators/username-generator')
-			usernames.append(loads(r.text)['data']['name'])
+			usernames.append(loads(r.text)['data']['name'] + "".join([choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ013456789") for _ in range(5)]))
 
 		except:
 			pass
@@ -164,12 +164,18 @@ def mainth(email):
 
 			wait.until(EC.element_to_be_clickable((By.XPATH, '//button[contains(.,"Buy LAND")]')))
 
+			driver.get('https://www.sandbox.game/en/me/avatar/')
+			logger.success(f'{email} | The account has been successfully registered, starting to create an avatar')
+			wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'randomizeButton'))).click()
+			wait.until(EC.element_to_be_clickable((By.XPATH, '//button[contains(.,"Save changes")]'))).click()
+			wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'container-save-pop-up.container-save-pop-up-update')))
+
 		except exceptions.TimeoutException as error:
-			logger.error(f'Didn\'t wait for the element, trying agant, error: {str(error)}')
+			logger.error(f'{email} | Didn\'t wait for the element, trying agant, error: {str(error)}')
 			driver.quit()
 
 		except Exception as error:
-			logger.error(f'Unexpected error: {str(error)}')
+			logger.error(f'{email} | Unexpected error: {str(error)}')
 			driver.quit()
 
 		else:
